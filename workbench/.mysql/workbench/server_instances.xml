@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<data grt_format="2.0">
+  <value _ptr_="0x559bcc9ae760" type="list" content-type="object" content-struct-name="db.mgmt.ServerInstance">
+    <value type="object" struct-name="db.mgmt.ServerInstance" id="b4e17668-0832-11ef-bb18-0242ac150003" struct-checksum="0x367436e2">
+      <value _ptr_="0x559bccdc42e0" type="dict" key="loginInfo"/>
+      <value _ptr_="0x559bccc263f0" type="dict" key="serverInfo">
+        <value type="int" key="setupPending">1</value>
+      </value>
+      <value type="string" key="name">bitnami_opencart</value>
+    </value>
+    <value type="object" struct-name="db.mgmt.ServerInstance" id="3bff2758-0838-11ef-b36e-0242c0a86002" struct-checksum="0x367436e2">
+      <link type="object" struct-name="db.mgmt.Connection" key="connection">0d29f53e-0838-11ef-b36e-0242c0a86002</link>
+      <value _ptr_="0x559bccf81260" type="dict" key="loginInfo"/>
+      <value _ptr_="0x559bccf7b970" type="dict" key="serverInfo">
+        <value type="int" key="setupPending">1</value>
+      </value>
+      <value type="string" key="name">bitnami_opencart</value>
+      <link type="object" struct-name="GrtObject" key="owner">ff893de0-0837-11ef-b36e-0242c0a86002</link>
+    </value>
+  </value>
+</data>

@@ -1,0 +1,86 @@
+version: '2'
+services:
+  mysql-workbench:
+      image: lscr.io/linuxserver/mysql-workbench:8.0.36
+      container_name: mysql-workbench
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Asia/Taipei
+          #- DISPLAY=172.29.224.1:0
+      volumes:
+        - 'workbench_config:/config'
+      ports:
+        - 3000:3000
+        - 3001:3001
+      cap_add:
+        - IPC_LOCK
+      depends_on:
+        - mysql
+      restart: unless-stopped
+  opcua-server:
+    container_name: opcua-server
+    image: python:3.8-slim
+    volumes:
+      - ./opcua_server:/opcua_server
+    working_dir: /opcua_server
+    command: sh -c "pip install -r requirements.txt && python opcua_server.py"
+    ports:
+      - "4840:4840"
+    restart: always
+  node-red:
+    container_name: mynodered
+    image: nodered/node-red:3.0.2-18
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./nodered-data:/data
+    depends_on:
+      - opcua-server
+    restart: unless-stopped
+  mysql:
+    image: docker.io/bitnami/mysql:8.0.36
+    container_name: mysql 
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      # - ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=bitnami
+      - MYSQL_USER=bn_opencart
+      - MYSQL_PASSWORD=bitnami
+      - MYSQL_DATABASE=bitnami_opencart
+    healthcheck:
+      test: ['CMD', '/opt/bitnami/scripts/mysql/healthcheck.sh']
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/bitnami/mysql
+  opencart:
+    image: bitnami/opencart:4.0.2-3
+    container_name: opencart 
+    ports:
+      - '80:8080'
+      - '443:8443'
+    environment:
+      - OPENCART_HOST=localhost
+      - OPENCART_DATABASE_HOST=mysql
+      - OPENCART_DATABASE_PORT_NUMBER=3306
+      - OPENCART_DATABASE_USER=bn_opencart
+      - OPENCART_DATABASE_NAME=bitnami_opencart
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      # - ALLOW_EMPTY_PASSWORD=yes
+      - OPENCART_DATABASE_PASSWORD=bitnami
+    volumes:
+      - ./opencart_image_data:/opt/bitnami/opencart/image
+      - ./opencart_data:/bitnami/opencart
+      - ./opencart_storage_data:/bitnami/opencart_storage
+    depends_on:
+      - mysql
+
+volumes:
+  workbench_config:
+    driver: local
+
+
